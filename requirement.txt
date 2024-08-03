@@ -1,0 +1,10 @@
+streamlit
+pandas
+openpyxl
+fpdf
+passlib
+plotly
+LinearRegression
+reportlab
+PyMuPDF
+PyPDF2
