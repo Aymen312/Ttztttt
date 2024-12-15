@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Titre de l'application
-st.title("Visualisation des données par date de livraison")
+st.title("TDR")
 
 # 1. Permettre à l'utilisateur de télécharger un fichier CSV
 uploaded_file = st.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
