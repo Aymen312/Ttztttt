@@ -2,14 +2,14 @@ import streamlit as st
 import pandas as pd
 
 # Titre de l'application
-st.title("Ayada/Stephane TDR")
+st.title("Visualisation des données par date de livraison")
 
 # 1. Permettre à l'utilisateur de télécharger un fichier CSV
 uploaded_file = st.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
 
 if uploaded_file is not None:
     try:
-        # Lire le fichier CSV avec un séparateur ';' (adaptable selon le fichier)
+        # Lire le fichier CSV avec un séparateur ';'
         data = pd.read_csv(uploaded_file, sep=';', encoding_errors='ignore')
         
         # Nettoyer les noms de colonnes en supprimant les espaces
@@ -46,6 +46,16 @@ if uploaded_file is not None:
                     # Affichage des données filtrées
                     st.write("Données correspondantes à la date sélectionnée :")
                     st.dataframe(filtered_data)
+                    
+                    # 6. Calculer la somme des prixachat par fournisseur
+                    if 'fournisseur' in filtered_data.columns and 'prixachat' in filtered_data.columns:
+                        somme_par_fournisseur = filtered_data.groupby('fournisseur', as_index=False)['prixachat'].sum()
+                        
+                        # Afficher le tableau de somme par fournisseur
+                        st.write("Somme des prix d'achat par fournisseur :")
+                        st.dataframe(somme_par_fournisseur)
+                    else:
+                        st.warning("Les colonnes 'fournisseur' ou 'prixachat' sont manquantes dans le fichier.")
                 else:
                     st.warning("Aucune donnée trouvée pour cette date de livraison.")
         else:
