@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Titre de l'application
-st.title("Visualisation des données par date de livraison")
+st.title("Ayada/Stephane TDR")
 
 # 1. Permettre à l'utilisateur de télécharger un fichier CSV
 uploaded_file = st.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
@@ -32,8 +32,20 @@ if uploaded_file is not None:
                 filtered_data = data[data['datelivraison'] == date_selectionnee]
                 
                 if not filtered_data.empty:
+                    # 5. Réorganiser les colonnes dans l'ordre souhaité
+                    colonnes_ordre = [
+                        'datelivraison', 'fournisseur', 'designation', 'taille', 'barcode', 'couleur',
+                        'famille', 'ssfamille', 'prixachat', 'qte_cde', 'val_cde', 
+                        'qte_rel', 'val_rel', 'qte_liv', 'val_liv'
+                    ]
+                    
+                    # S'assurer que seules les colonnes existantes sont sélectionnées
+                    colonnes_existantes = [col for col in colonnes_ordre if col in filtered_data.columns]
+                    filtered_data = filtered_data[colonnes_existantes]
+                    
+                    # Affichage des données filtrées
                     st.write("Données correspondantes à la date sélectionnée :")
-                    st.dataframe(filtered_data)  # Affichage des données filtrées
+                    st.dataframe(filtered_data)
                 else:
                     st.warning("Aucune donnée trouvée pour cette date de livraison.")
         else:
