@@ -35,7 +35,7 @@ if uploaded_file is not None:
                     # 5. Réorganiser les colonnes dans l'ordre souhaité
                     colonnes_ordre = [
                         'datelivraison', 'fournisseur', 'designation', 'taille', 'barcode', 'couleur',
-                        'famille', 'ssfamille', 'prixachat', 'qte_cde', 'val_cde', 
+                        'famille', 'prixachat', 'qte_cde', 'val_cde', 
                         'qte_rel', 'val_rel', 'qte_liv', 'val_liv'
                     ]
                     
