@@ -17,14 +17,18 @@ if uploaded_file is not None:
         
         # Vérifier si la colonne "datelivraison" existe
         if 'datelivraison' in data.columns:
-            # 2. Extraire les dates uniques pour afficher dans une liste déroulante
-            dates_uniques = data['datelivraison'].dropna().unique()
+            # 2. Extraire les dates uniques et trier dans l'ordre croissant
+            dates_uniques = sorted(pd.to_datetime(data['datelivraison'].dropna().unique(), dayfirst=True))
+            
+            # Convertir les dates en format chaîne pour affichage
+            dates_formatees = [date.strftime("%d/%m/%Y") for date in dates_uniques]
             
             # 3. Utiliser un sélecteur interactif pour choisir une date
-            date_selectionnee = st.selectbox("Choisissez une date de livraison :", dates_uniques)
+            date_selectionnee = st.selectbox("Choisissez une date de livraison :", dates_formatees)
             
             # 4. Filtrer les données selon la date sélectionnée
             if date_selectionnee:
+                # Convertir la date sélectionnée au format original
                 filtered_data = data[data['datelivraison'] == date_selectionnee]
                 
                 if not filtered_data.empty:
