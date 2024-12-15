@@ -35,7 +35,7 @@ if uploaded_file is not None:
                     # 5. Réorganiser les colonnes dans l'ordre souhaité
                     colonnes_ordre = [
                         'datelivraison', 'fournisseur', 'designation', 'taille', 'barcode', 'couleur',
-                        'famille', 'prixachat', 'qte_cde', 'val_cde', 
+                        'famille', 'ssfamille', 'prixachat', 'qte_cde', 'val_cde', 
                         'qte_rel', 'val_rel', 'qte_liv', 'val_liv'
                     ]
                     
@@ -43,19 +43,29 @@ if uploaded_file is not None:
                     colonnes_existantes = [col for col in colonnes_ordre if col in filtered_data.columns]
                     filtered_data = filtered_data[colonnes_existantes]
                     
-                    # Affichage des données filtrées
-                    st.write("Données correspondantes à la date sélectionnée :")
-                    st.dataframe(filtered_data)
+                    # Afficher les données filtrées et les autres tableaux en colonnes
+                    col1, col2 = st.columns(2)
                     
-                    # 6. Calculer la somme des prixachat par fournisseur
-                    if 'fournisseur' in filtered_data.columns and 'prixachat' in filtered_data.columns:
-                        somme_par_fournisseur = filtered_data.groupby('fournisseur', as_index=False)['prixachat'].sum()
-                        
-                        # Afficher le tableau de somme par fournisseur
-                        st.write("Somme des prix d'achat par fournisseur :")
-                        st.dataframe(somme_par_fournisseur)
-                    else:
-                        st.warning("Les colonnes 'fournisseur' ou 'prixachat' sont manquantes dans le fichier.")
+                    with col1:
+                        st.write("Données correspondantes à la date sélectionnée :")
+                        st.dataframe(filtered_data)
+                    
+                        # 6. Calculer la somme des prixachat par fournisseur
+                        if 'fournisseur' in filtered_data.columns and 'prixachat' in filtered_data.columns:
+                            somme_par_fournisseur = filtered_data.groupby('fournisseur', as_index=False)['prixachat'].sum()
+                            st.write("Somme des prix d'achat par fournisseur :")
+                            st.dataframe(somme_par_fournisseur)
+                        else:
+                            st.warning("Les colonnes 'fournisseur' ou 'prixachat' sont manquantes.")
+                    
+                    with col2:
+                        # 7. Calculer la somme des qte_cde par designation
+                        if 'designation' in filtered_data.columns and 'qte_cde' in filtered_data.columns:
+                            somme_par_designation = filtered_data.groupby('designation', as_index=False)['qte_cde'].sum()
+                            st.write("Somme des quantités commandées par désignation :")
+                            st.dataframe(somme_par_designation)
+                        else:
+                            st.warning("Les colonnes 'designation' ou 'qte_cde' sont manquantes.")
                 else:
                     st.warning("Aucune donnée trouvée pour cette date de livraison.")
         else:
