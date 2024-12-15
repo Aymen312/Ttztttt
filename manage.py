@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Titre de l'application
-st.title("TDR")
+st.title("Visualisation des données par date de livraison")
 
 # 1. Permettre à l'utilisateur de télécharger un fichier CSV
 uploaded_file = st.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
@@ -43,23 +43,24 @@ if uploaded_file is not None:
                     colonnes_existantes = [col for col in colonnes_ordre if col in filtered_data.columns]
                     filtered_data = filtered_data[colonnes_existantes]
                     
-                    # Afficher les données filtrées et les autres tableaux en colonnes
+                    # Afficher les données filtrées
+                    st.write("Données correspondantes à la date sélectionnée :")
+                    st.dataframe(filtered_data)
+                    
+                    # Disposition des deux tableaux côte à côte
                     col1, col2 = st.columns(2)
-                    
+
                     with col1:
-                        st.write("Données correspondantes à la date sélectionnée :")
-                        st.dataframe(filtered_data)
-                    
-                        # 6. Calculer la somme des prixachat par fournisseur
+                        # Somme des prixachat par fournisseur
                         if 'fournisseur' in filtered_data.columns and 'prixachat' in filtered_data.columns:
                             somme_par_fournisseur = filtered_data.groupby('fournisseur', as_index=False)['prixachat'].sum()
                             st.write("Somme des prix d'achat par fournisseur :")
                             st.dataframe(somme_par_fournisseur)
                         else:
                             st.warning("Les colonnes 'fournisseur' ou 'prixachat' sont manquantes.")
-                    
+
                     with col2:
-                        # 7. Calculer la somme des qte_cde par designation
+                        # Somme des qte_cde par designation
                         if 'designation' in filtered_data.columns and 'qte_cde' in filtered_data.columns:
                             somme_par_designation = filtered_data.groupby('designation', as_index=False)['qte_cde'].sum()
                             st.write("Somme des quantités commandées par désignation :")
