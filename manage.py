@@ -1,22 +1,39 @@
-#!/usr/bin/env python
-import os
-import sys
+import streamlit as st
+import pandas as pd
+from io import StringIO
 
-if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "myproject.settings")
+# Titre de l'application
+st.title("Visualisation et Filtrage des Données")
+
+# 1. Permettre à l'utilisateur de télécharger un fichier CSV
+uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
+
+if uploaded_file is not None:
     try:
-        from django.core.management import execute_from_command_line
-    except ImportError:
-        # The above import may fail for some other reason. Ensure that the
-        # issue is really that Django is missing to avoid masking other
-        # exceptions on Python 2.
-        try:
-            import django
-        except ImportError:
-            raise ImportError(
-                "Couldn't import Django. Are you sure it's installed and "
-                "available on your PYTHONPATH environment variable? Did you "
-                "forget to activate a virtual environment?"
-            )
-        raise
-    execute_from_command_line(sys.argv)
+        # Lire le fichier CSV dans un DataFrame avec encodage adaptatif et séparateur ';'
+        data = pd.read_csv(uploaded_file, sep=';', encoding_errors='ignore')
+        
+        # Nettoyer les noms de colonnes en supprimant les espaces
+        data.columns = data.columns.str.strip()
+        
+        # 2. Ajouter un champ pour saisir une date de livraison
+        date_livraison = st.text_input("Entrez la date de livraison (format JJ/MM/AAAA):")
+        
+        if date_livraison:
+            try:
+                # Filtrer les données pour afficher celles correspondant à la date
+                filtered_data = data[data['datelivraison'] == date_livraison]
+                
+                if not filtered_data.empty:
+                    st.write("Données correspondantes :")
+                    st.write(filtered_data)
+                else:
+                    st.warning("Aucune donnée trouvée pour cette date de livraison.")
+            except KeyError:
+                st.error("La colonne 'datelivraison' n'existe pas dans le fichier.")
+            except Exception as e:
+                st.error(f"Erreur : {e}")
+    except Exception as e:
+        st.error(f"Impossible de lire le fichier : {e}")
+else:
+    st.info("Veuillez télécharger un fichier CSV pour commencer.")
