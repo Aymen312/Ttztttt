@@ -61,7 +61,7 @@ if uploaded_file is not None:
                     st.warning("Aucune donnée trouvée pour cette date de livraison.")
 
             st.write("---")  # Une ligne de séparation
-st.subheader("Recherche par désignation")
+           st.subheader("Recherche par désignation")
 
 # Zone de texte pour saisir une désignation
 designation_recherchee = st.text_input("Entrez une désignation pour voir les dates de livraison et quantités commandées :")
