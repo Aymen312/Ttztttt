@@ -56,13 +56,6 @@ if uploaded_file is not None:
                             somme_par_designation = filtered_data.groupby('designation', as_index=False)['qte_cde'].sum()
                             st.write("Somme des quantités commandées par désignation :")
                             st.dataframe(somme_par_designation)
-                    
-                    # Nouvelle fonctionnalité : Somme des qte_cde par designation et datelivraison
-                    if 'designation' in filtered_data.columns and 'qte_cde' in filtered_data.columns:
-                        somme_designation_date = filtered_data.groupby(['designation', 'datelivraison'], as_index=False)['qte_cde'].sum()
-                        st.write("Somme des quantités commandées (qte_cde) par désignation et date de livraison :")
-                        st.dataframe(somme_designation_date)
-                
                 else:
                     st.warning("Aucune donnée trouvée pour cette date de livraison.")
 
@@ -71,27 +64,26 @@ if uploaded_file is not None:
             st.subheader("Recherche par désignation")
 
             # Zone de texte pour saisir une désignation
-            designation_recherchee = st.text_input("Entrez une désignation pour voir les dates de livraison et les sommes :")
+            designation_recherchee = st.text_input("Entrez une désignation pour voir les quantités commandées et les dates de livraison :")
 
             if designation_recherchee:
                 # Filtrer les données pour la désignation spécifiée
                 data_designation = data[data['designation'].str.contains(designation_recherchee, case=False, na=False)]
                 
                 if not data_designation.empty:
-                    # Extraire les dates de livraison uniques
-                    dates_pour_designation = data_designation['datelivraison'].dropna().unique()
-                    dates_pour_designation = sorted(pd.to_datetime(dates_pour_designation, dayfirst=True))
-                    dates_formatees_designation = [date.strftime("%d/%m/%Y") for date in dates_pour_designation]
-                    
-                    # Afficher les dates uniques
-                    st.write(f"Dates de livraison pour la désignation '{designation_recherchee}' :")
-                    st.write(dates_formatees_designation)
-                    
-                    # Calculer et afficher la somme des qte_cde par designation et datelivraison
+                    # Grouper et afficher les quantités commandées par désignation et datelivraison
                     if 'qte_cde' in data_designation.columns and 'datelivraison' in data_designation.columns:
-                        somme_designation_date = data_designation.groupby(['designation', 'datelivraison'], as_index=False)['qte_cde'].sum()
-                        st.write("Somme des quantités commandées (qte_cde) par désignation et date de livraison :")
-                        st.dataframe(somme_designation_date)
+                        somme_qte_par_date = data_designation.groupby(['designation', 'datelivraison'], as_index=False)['qte_cde'].sum()
+                        
+                        # Trier les résultats par date de livraison
+                        somme_qte_par_date['datelivraison'] = pd.to_datetime(somme_qte_par_date['datelivraison'], dayfirst=True)
+                        somme_qte_par_date = somme_qte_par_date.sort_values(by='datelivraison')
+                        
+                        # Formater les dates pour l'affichage
+                        somme_qte_par_date['datelivraison'] = somme_qte_par_date['datelivraison'].dt.strftime("%d/%m/%Y")
+                        
+                        st.write(f"Quantités commandées pour la désignation '{designation_recherchee}' :")
+                        st.dataframe(somme_qte_par_date)
                 else:
                     st.warning("Aucune donnée trouvée pour cette désignation.")
         else:
