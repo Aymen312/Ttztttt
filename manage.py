@@ -69,10 +69,10 @@ if uploaded_file is not None:
             # Nouvelle fonctionnalité : Recherche par designation
             st.write("---")  # Une ligne de séparation
             st.subheader("Recherche par désignation")
-            
+
             # Zone de texte pour saisir une désignation
-            designation_recherchee = st.text_input("Entrez une désignation pour voir les dates de livraison :")
-            
+            designation_recherchee = st.text_input("Entrez une désignation pour voir les dates de livraison et les sommes :")
+
             if designation_recherchee:
                 # Filtrer les données pour la désignation spécifiée
                 data_designation = data[data['designation'].str.contains(designation_recherchee, case=False, na=False)]
@@ -86,6 +86,12 @@ if uploaded_file is not None:
                     # Afficher les dates uniques
                     st.write(f"Dates de livraison pour la désignation '{designation_recherchee}' :")
                     st.write(dates_formatees_designation)
+                    
+                    # Calculer et afficher la somme des qte_cde par designation et datelivraison
+                    if 'qte_cde' in data_designation.columns and 'datelivraison' in data_designation.columns:
+                        somme_designation_date = data_designation.groupby(['designation', 'datelivraison'], as_index=False)['qte_cde'].sum()
+                        st.write("Somme des quantités commandées (qte_cde) par désignation et date de livraison :")
+                        st.dataframe(somme_designation_date)
                 else:
                     st.warning("Aucune donnée trouvée pour cette désignation.")
         else:
