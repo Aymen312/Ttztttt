@@ -1,8 +1,8 @@
-import streamlit as st
+ import streamlit as st
 import pandas as pd
 
 # Titre de l'application
-st.title("TDR - Gestion des Commandes")
+st.title("TDR")
 
 # 1. Permettre à l'utilisateur de télécharger un fichier CSV
 uploaded_file = st.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
@@ -39,23 +39,23 @@ if uploaded_file is not None:
                     filtered_data = filtered_data[colonnes_existantes]
                     
                     # Afficher les données filtrées
-                    st.write("### Données correspondantes à la date sélectionnée")
-                    st.table(filtered_data)
+                    st.write("Données correspondantes à la date sélectionnée :")
+                    st.dataframe(filtered_data)
                     
-                    # Deux tableaux modernisés côte à côte
+                    # Deux tableaux côte à côte
                     col1, col2 = st.columns(2)
                     with col1:
                         # Somme des prixachat par fournisseur
                         if 'fournisseur' in filtered_data.columns and 'prixachat' in filtered_data.columns:
                             somme_par_fournisseur = filtered_data.groupby('fournisseur', as_index=False)['prixachat'].sum()
-                            st.write("### Somme des prix d'achat par fournisseur")
-                            st.table(somme_par_fournisseur)
+                            st.write("Somme des prix d'achat par fournisseur :")
+                            st.dataframe(somme_par_fournisseur)
                     with col2:
                         # Somme des qte_cde par designation
                         if 'designation' in filtered_data.columns and 'qte_cde' in filtered_data.columns:
                             somme_par_designation = filtered_data.groupby('designation', as_index=False)['qte_cde'].sum()
-                            st.write("### Somme des quantités commandées par désignation")
-                            st.table(somme_par_designation)
+                            st.write("Somme des quantités commandées par désignation :")
+                            st.dataframe(somme_par_designation)
                 
                 else:
                     st.warning("Aucune donnée trouvée pour cette date de livraison.")
@@ -78,7 +78,7 @@ if uploaded_file is not None:
                     dates_formatees_designation = [date.strftime("%d/%m/%Y") for date in dates_pour_designation]
                     
                     # Afficher les dates uniques
-                    st.write(f"### Dates de livraison pour la désignation '{designation_recherchee}'")
+                    st.write(f"Dates de livraison pour la désignation '{designation_recherchee}' :")
                     st.write(dates_formatees_designation)
                 else:
                     st.warning("Aucune donnée trouvée pour cette désignation.")
