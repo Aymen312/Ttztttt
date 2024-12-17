@@ -55,9 +55,12 @@ if uploaded_file is not None:
                             st.write("Somme des val_rel par fournisseur :")
                             st.dataframe(somme_par_fournisseur)
                     with col2:
+                        # Filtrer pour exclure qte_rel == 0
+                        filtered_qte_rel = filtered_data[filtered_data['qte_rel'] != 0]
+                        
                         # Somme des qte_rel par designation
-                        if 'designation' in filtered_data.columns and 'qte_rel' in filtered_data.columns:
-                            somme_par_designation = filtered_data.groupby('designation', as_index=False)['qte_rel'].sum()
+                        if 'designation' in filtered_qte_rel.columns and 'qte_rel' in filtered_qte_rel.columns:
+                            somme_par_designation = filtered_qte_rel.groupby('designation', as_index=False)['qte_rel'].sum()
                             st.write("Somme des quantités réalisées par désignation :")
                             st.dataframe(somme_par_designation)
                 else:
@@ -71,8 +74,9 @@ if uploaded_file is not None:
             designation_recherchee = st.text_input("Entrez une désignation pour voir les quantités commandées et les dates de livraison :")
 
             if designation_recherchee:
-                # Filtrer les données pour la désignation spécifiée
-                data_designation = data[data['designation'].str.contains(designation_recherchee, case=False, na=False)]
+                # Filtrer les données pour la désignation spécifiée et exclure qte_rel == 0
+                data_designation = data[(data['designation'].str.contains(designation_recherchee, case=False, na=False)) & 
+                                        (data['qte_rel'] != 0)]
                 
                 if not data_designation.empty:
                     # Grouper et afficher les quantités commandées par désignation et datelivraison
