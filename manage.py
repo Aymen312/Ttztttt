@@ -52,8 +52,8 @@ if uploaded_file is not None:
                             st.dataframe(somme_par_fournisseur)
                     with col2:
                         # Somme des qte_cde par designation
-                        if 'designation' in filtered_data.columns and 'qte_cde' in filtered_data.columns:
-                            somme_par_designation = filtered_data.groupby('designation', as_index=False)['qte_cde'].sum()
+                        if 'designation' in filtered_data.columns and 'qte_rel' in filtered_data.columns:
+                            somme_par_designation = filtered_data.groupby('designation', as_index=False)['qte_rel'].sum()
                             st.write("Somme des quantités commandées par désignation :")
                             st.dataframe(somme_par_designation)
                 else:
