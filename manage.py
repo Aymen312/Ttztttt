@@ -71,8 +71,11 @@ if uploaded_file is not None:
             designation_recherchee = st.text_input("Entrez une désignation pour voir les quantités commandées et les dates de livraison :")
 
             if designation_recherchee:
-                # Filtrer les données pour la désignation spécifiée
-                data_designation = data[data['designation'].str.contains(designation_recherchee, case=False, na=False)]
+                # Filtrer les données pour la désignation spécifiée et exclure qte_cde == 0
+                data_designation = data[
+                    (data['designation'].str.contains(designation_recherchee, case=False, na=False)) &
+                    (data['qte_cde'] != 0)
+                ]
                 
                 if not data_designation.empty:
                     # Grouper et afficher les quantités commandées par désignation et datelivraison
