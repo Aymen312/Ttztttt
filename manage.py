@@ -72,8 +72,8 @@ if uploaded_file is not None:
                 
                 if not data_designation.empty:
                     # Grouper et afficher les quantités commandées par désignation et datelivraison
-                    if 'qte_cde' in data_designation.columns and 'datelivraison' in data_designation.columns:
-                        somme_qte_par_date = data_designation.groupby(['designation', 'datelivraison'], as_index=False)['qte_cde'].sum()
+                    if 'qte_rel' in data_designation.columns and 'datelivraison' in data_designation.columns:
+                        somme_qte_par_date = data_designation.groupby(['designation', 'datelivraison'], as_index=False)['qte_rel'].sum()
                         
                         # Trier les résultats par date de livraison
                         somme_qte_par_date['datelivraison'] = pd.to_datetime(somme_qte_par_date['datelivraison'], dayfirst=True)
