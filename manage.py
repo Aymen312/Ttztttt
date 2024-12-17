@@ -47,8 +47,8 @@ if uploaded_file is not None:
                     with col1:
                         # Somme des prixachat par fournisseur
                         if 'fournisseur' in filtered_data.columns and 'prixachat' in filtered_data.columns:
-                            somme_par_fournisseur = filtered_data.groupby('fournisseur', as_index=False)['prixachat'].sum()
-                            st.write("Somme des prix d'achat par fournisseur :")
+                            somme_par_fournisseur = filtered_data.groupby('fournisseur', as_index=False)['val_rel'].sum()
+                            st.write("Somme des prix  val_rel par fournisseur :")
                             st.dataframe(somme_par_fournisseur)
                     with col2:
                         # Somme des qte_cde par designation
