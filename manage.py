@@ -15,6 +15,10 @@ if uploaded_file is not None:
         # Nettoyer les noms de colonnes en supprimant les espaces
         data.columns = data.columns.str.strip()
         
+        # Filtrer les lignes où 'qte_cde' n'est pas égal à 0
+        if 'qte_cde' in data.columns:
+            data = data[data['qte_cde'] != 0]
+
         # Vérifier si la colonne "datelivraison" existe
         if 'datelivraison' in data.columns:
             # 2. Extraire les dates uniques et trier dans l'ordre croissant
@@ -46,15 +50,15 @@ if uploaded_file is not None:
                     col1, col2 = st.columns(2)
                     with col1:
                         # Somme des prixachat par fournisseur
-                        if 'fournisseur' in filtered_data.columns and 'prixachat' in filtered_data.columns:
+                        if 'fournisseur' in filtered_data.columns and 'val_rel' in filtered_data.columns:
                             somme_par_fournisseur = filtered_data.groupby('fournisseur', as_index=False)['val_rel'].sum()
-                            st.write("Somme des prix  val_rel par fournisseur :")
+                            st.write("Somme des val_rel par fournisseur :")
                             st.dataframe(somme_par_fournisseur)
                     with col2:
-                        # Somme des qte_cde par designation
+                        # Somme des qte_rel par designation
                         if 'designation' in filtered_data.columns and 'qte_rel' in filtered_data.columns:
                             somme_par_designation = filtered_data.groupby('designation', as_index=False)['qte_rel'].sum()
-                            st.write("Somme des quantités commandées par désignation :")
+                            st.write("Somme des quantités réalisées par désignation :")
                             st.dataframe(somme_par_designation)
                 else:
                     st.warning("Aucune donnée trouvée pour cette date de livraison.")
