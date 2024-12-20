@@ -4,62 +4,47 @@ import pandas as pd
 # Configuration de la page Streamlit pour un thème plus large
 st.set_page_config(layout="wide")
 
-# Personnalisation du thème Streamlit (bleu moderne et amélioré)
+# Personnalisation du thème Streamlit (bleu moderne)
 st.markdown(
     """
     <style>
     :root {
-        --primary-color: #0E76A8;
-        --background-color: #FFFFFF;
-        --secondary-background-color: #F0F2F6;
-        --text-color: #31333F;
-        --accent-color: #FFA07A;
+        --primary-color: #007BFF;
+        --secondary-background-color: #f0f8ff;
+        --text-color: #333333;
+        --font: sans-serif;
     }
     .stApp {
-        background-color: var(--background-color);
+        background-color: var(--secondary-background-color);
         color: var(--text-color);
-        font-family: sans-serif;
+        font-family: var(--font);
     }
     h1, h2, h3, h4, h5, h6 {
         color: var(--primary-color);
-        margin-bottom: 0.5em;
     }
     .stButton>button {
         background-color: var(--primary-color);
         color: white;
         border: none;
-        padding: 0.7em 1.2em;
-        border-radius: 0.5em;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+        border-radius: 0.3rem;
+        padding: 0.5em 1em;
     }
-    .stButton>button:hover {
-        background-color: #075B85;
+    .stTextInput>div>div>input {
+        border: 1px solid var(--primary-color);
+        border-radius: 0.3rem;
     }
-    .stTextInput>div>div>input,
     .stSelectbox>div>div>div>div {
-        border: 1px solid #CED4DA;
-        border-radius: 0.4em;
-        padding: 0.6em;
         background-color: white;
+        border: 1px solid var(--primary-color);
+        border-radius: 0.3rem;
         color: var(--text-color);
     }
-    .stSelectbox>div>div>div {
-        background-color: white;
-    }
     .stDataFrame {
-        border: 1px solid #E0E0E0;
-        border-radius: 0.5em;
-        box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
-        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 0.3rem;
     }
     .stDataFrame table {
         background-color: white;
-        color: var(--text-color);
-    }
-    .dataframe tbody tr:last-child {
-        background-color: #ADD8E6 !important;
-        font-weight: bold;
     }
     </style>
     """,
@@ -114,7 +99,7 @@ if uploaded_file is not None:
                     # Deux tableaux côte à côte
                     col1, col2 = st.columns(2)
                     with col1:
-                        # Somme des val_rel par fournisseur
+                        # Somme des prixachat par fournisseur
                         if 'fournisseur' in filtered_data.columns and 'val_rel' in filtered_data.columns:
                             somme_par_fournisseur = filtered_data.groupby('fournisseur', as_index=False)['val_rel'].sum()
 
@@ -123,8 +108,14 @@ if uploaded_file is not None:
                             nouvelle_ligne_fournisseur = pd.DataFrame({'fournisseur': ['Total'], 'val_rel': [total_val_rel]})
                             somme_par_fournisseur = pd.concat([somme_par_fournisseur, nouvelle_ligne_fournisseur], ignore_index=True)
 
+                            # Formater la ligne du total en bleu
+                            def highlight_total(s):
+                                if s.iloc[0] == 'Total':  # Index 0 car 'fournisseur' est la première colonne
+                                    return ['background-color: #ADD8E6'] * len(s)  # Bleu clair
+                                return [''] * len(s)
+
                             st.write("Somme des val_rel par fournisseur :")
-                            st.dataframe(somme_par_fournisseur.style.apply(lambda s: ['background-color: #ADD8E6'] * len(s) if s.iloc[0] == 'Total' else [''], axis=1))
+                            st.dataframe(somme_par_fournisseur.style.apply(highlight_total, axis=1))
 
                     with col2:
                         # Filtrer pour exclure qte_rel == 0
@@ -141,7 +132,7 @@ if uploaded_file is not None:
 
                             # Appliquer le même style bleu à la ligne du total
                             st.write("Somme des quantités réalisées par désignation :")
-                            st.dataframe(somme_par_designation.style.apply(lambda s: ['background-color: #ADD8E6'] * len(s) if s.iloc[0] == 'Total' else [''], axis=1))
+                            st.dataframe(somme_par_designation.style.apply(highlight_total, axis=1))
 
                 else:
                     st.warning("Aucune donnée trouvée pour cette date de livraison.")
