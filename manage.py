@@ -114,8 +114,11 @@ if uploaded_file is not None:
                                     return ['background-color: #ADD8E6'] * len(s)  # Bleu clair
                                 return [''] * len(s)
 
+                            # Formatter la colonne 'val_rel' pour afficher deux chiffres avant la décimale
+                            styled_somme_fournisseur = somme_par_fournisseur.style.format({'val_rel': '{:02.2f}'}).apply(highlight_total, axis=1)
+
                             st.write("Somme des val_rel par fournisseur :")
-                            st.dataframe(somme_par_fournisseur.style.apply(highlight_total, axis=1))
+                            st.dataframe(styled_somme_fournisseur)
 
                     with col2:
                         # Filtrer pour exclure qte_rel == 0
