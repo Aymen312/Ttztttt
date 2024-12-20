@@ -1,6 +1,56 @@
 import streamlit as st
 import pandas as pd
 
+# Configuration de la page Streamlit pour un thème plus large
+st.set_page_config(layout="wide")
+
+# Personnalisation du thème Streamlit (bleu moderne)
+st.markdown(
+    """
+    <style>
+    :root {
+        --primary-color: #007BFF;
+        --secondary-background-color: #f0f8ff;
+        --text-color: #333333;
+        --font: sans-serif;
+    }
+    .stApp {
+        background-color: var(--secondary-background-color);
+        color: var(--text-color);
+        font-family: var(--font);
+    }
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--primary-color);
+    }
+    .stButton>button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 0.3rem;
+        padding: 0.5em 1em;
+    }
+    .stTextInput>div>div>input {
+        border: 1px solid var(--primary-color);
+        border-radius: 0.3rem;
+    }
+    .stSelectbox>div>div>div>div {
+        background-color: white;
+        border: 1px solid var(--primary-color);
+        border-radius: 0.3rem;
+        color: var(--text-color);
+    }
+    .stDataFrame {
+        border: 1px solid #ddd;
+        border-radius: 0.3rem;
+    }
+    .stDataFrame table {
+        background-color: white;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 # Titre de l'application
 st.title("TDR")
 
@@ -53,13 +103,20 @@ if uploaded_file is not None:
                         if 'fournisseur' in filtered_data.columns and 'val_rel' in filtered_data.columns:
                             somme_par_fournisseur = filtered_data.groupby('fournisseur', as_index=False)['val_rel'].sum()
 
-                            # Ajouter la ligne de somme totale
+                            # Ajouter la ligne de somme totale avec style bleu
                             total_val_rel = somme_par_fournisseur['val_rel'].sum()
                             nouvelle_ligne = pd.DataFrame({'fournisseur': ['Total'], 'val_rel': [total_val_rel]})
                             somme_par_fournisseur = pd.concat([somme_par_fournisseur, nouvelle_ligne], ignore_index=True)
 
+                            # Formater la ligne du total en bleu
+                            def highlight_total(s):
+                                if s.loc['fournisseur'] == 'Total':
+                                    return ['background-color: #ADD8E6'] * len(s)  # Bleu clair
+                                return [''] * len(s)
+
                             st.write("Somme des val_rel par fournisseur :")
-                            st.dataframe(somme_par_fournisseur)
+                            st.dataframe(somme_par_fournisseur.style.apply(highlight_total, axis=1))
+
                     with col2:
                         # Filtrer pour exclure qte_rel == 0
                         filtered_qte_rel = filtered_data[filtered_data['qte_rel'] != 0]
@@ -77,7 +134,8 @@ if uploaded_file is not None:
             st.subheader("Recherche par désignation")
 
             # Zone de texte pour saisir une désignation
-            designation_recherchee = st.text_input("Entrez une désignation pour voir les quantités commandées et les dates de livraison :")
+            st.markdown("<p style='color: var(--primary-color);'>Entrez une désignation pour voir les quantités commandées et les dates de livraison :</p>", unsafe_allow_html=True)
+            designation_recherchee = st.text_input("")
 
             if designation_recherchee:
                 # Filtrer les données pour la désignation spécifiée et exclure qte_rel == 0
