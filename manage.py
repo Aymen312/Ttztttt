@@ -52,6 +52,11 @@ if uploaded_file is not None:
                         # Somme des prixachat par fournisseur
                         if 'fournisseur' in filtered_data.columns and 'val_rel' in filtered_data.columns:
                             somme_par_fournisseur = filtered_data.groupby('fournisseur', as_index=False)['val_rel'].sum()
+                            
+                            #Ajouter une ligne avec la somme totale
+                            somme_totale = somme_par_fournisseur['val_rel'].sum()
+                            somme_par_fournisseur = somme_par_fournisseur.append({'fournisseur':'Total', 'val_rel':somme_totale}, ignore_index=True)
+
                             st.write("Somme des val_rel par fournisseur :")
                             st.dataframe(somme_par_fournisseur)
                     with col2:
