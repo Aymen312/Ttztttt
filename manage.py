@@ -105,12 +105,12 @@ if uploaded_file is not None:
 
                             # Ajouter la ligne de somme totale avec style bleu
                             total_val_rel = somme_par_fournisseur['val_rel'].sum()
-                            nouvelle_ligne = pd.DataFrame({'fournisseur': ['Total'], 'val_rel': [total_val_rel]})
-                            somme_par_fournisseur = pd.concat([somme_par_fournisseur, nouvelle_ligne], ignore_index=True)
+                            nouvelle_ligne_fournisseur = pd.DataFrame({'fournisseur': ['Total'], 'val_rel': [total_val_rel]})
+                            somme_par_fournisseur = pd.concat([somme_par_fournisseur, nouvelle_ligne_fournisseur], ignore_index=True)
 
                             # Formater la ligne du total en bleu
                             def highlight_total(s):
-                                if s.loc['fournisseur'] == 'Total':
+                                if s.iloc[0] == 'Total':  # Index 0 car 'fournisseur' est la première colonne
                                     return ['background-color: #ADD8E6'] * len(s)  # Bleu clair
                                 return [''] * len(s)
 
@@ -124,8 +124,16 @@ if uploaded_file is not None:
                         # Somme des qte_rel par designation
                         if 'designation' in filtered_qte_rel.columns and 'qte_rel' in filtered_qte_rel.columns:
                             somme_par_designation = filtered_qte_rel.groupby('designation', as_index=False)['qte_rel'].sum()
+
+                            # Ajouter la ligne de somme totale pour la désignation
+                            total_qte_rel = somme_par_designation['qte_rel'].sum()
+                            nouvelle_ligne_designation = pd.DataFrame({'designation': ['Total'], 'qte_rel': [total_qte_rel]})
+                            somme_par_designation = pd.concat([somme_par_designation, nouvelle_ligne_designation], ignore_index=True)
+
+                            # Appliquer le même style bleu à la ligne du total
                             st.write("Somme des quantités réalisées par désignation :")
-                            st.dataframe(somme_par_designation)
+                            st.dataframe(somme_par_designation.style.apply(highlight_total, axis=1))
+
                 else:
                     st.warning("Aucune donnée trouvée pour cette date de livraison.")
 
