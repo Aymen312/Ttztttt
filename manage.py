@@ -4,86 +4,47 @@ import pandas as pd
 # Configuration de la page Streamlit pour un thème plus large
 st.set_page_config(layout="wide")
 
-# Personnalisation du thème Streamlit (moderne)
+# Personnalisation du thème Streamlit (bleu moderne)
 st.markdown(
     """
     <style>
     :root {
-        --primary-color: #6200ee;  /* Violet moderne */
-        --secondary-color: #03dac6;  /* Cyan vif */
-        --background-color: #f5f5f5;  /* Fond clair */
-        --text-color: #333333;  /* Texte sombre */
-        --font: 'Roboto', sans-serif;  /* Police moderne */
-        --border-radius: 8px;  /* Bordures arrondies */
-        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Ombre légère */
+        --primary-color: #007BFF;
+        --secondary-background-color: #f0f8ff;
+        --text-color: #333333;
+        --font: sans-serif;
     }
     .stApp {
-        background-color: var(--background-color);
+        background-color: var(--secondary-background-color);
         color: var(--text-color);
         font-family: var(--font);
     }
     h1, h2, h3, h4, h5, h6 {
         color: var(--primary-color);
-        font-weight: 600;
     }
     .stButton>button {
         background-color: var(--primary-color);
         color: white;
         border: none;
-        border-radius: var(--border-radius);
+        border-radius: 0.3rem;
         padding: 0.5em 1em;
-        font-size: 1em;
-        box-shadow: var(--box-shadow);
-        transition: background-color 0.3s ease;
-    }
-    .stButton>button:hover {
-        background-color: #3700b3;  /* Violet plus foncé au survol */
     }
     .stTextInput>div>div>input {
         border: 1px solid var(--primary-color);
-        border-radius: var(--border-radius);
-        padding: 0.5em;
-        box-shadow: var(--box-shadow);
+        border-radius: 0.3rem;
     }
     .stSelectbox>div>div>div>div {
         background-color: white;
         border: 1px solid var(--primary-color);
-        border-radius: var(--border-radius);
+        border-radius: 0.3rem;
         color: var(--text-color);
-        box-shadow: var(--box-shadow);
     }
     .stDataFrame {
         border: 1px solid #ddd;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
+        border-radius: 0.3rem;
     }
     .stDataFrame table {
         background-color: white;
-    }
-    .stMarkdown {
-        color: var(--text-color);
-    }
-    .stHeader {
-        color: var(--primary-color);
-    }
-    .stSidebar {
-        background-color: var(--background-color);
-        padding: 1em;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-    }
-    .stFileUploader>div>div>div>button {
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: var(--border-radius);
-        padding: 0.5em 1em;
-        font-size: 1em;
-        box-shadow: var(--box-shadow);
-        transition: background-color 0.3s ease;
-    }
-    .stFileUploader>div>div>div>button:hover {
-        background-color: #3700b3;  /* Violet plus foncé au survol */
     }
     </style>
     """,
@@ -91,7 +52,7 @@ st.markdown(
 )
 
 # Titre de l'application
-st.title("TDR - Tableau de Bord Modernisé")
+st.title("TDR")
 
 # 1. Permettre à l'utilisateur de télécharger un fichier CSV
 uploaded_file = st.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
@@ -142,15 +103,15 @@ if uploaded_file is not None:
                         if 'fournisseur' in filtered_data.columns and 'val_rel' in filtered_data.columns:
                             somme_par_fournisseur = filtered_data.groupby('fournisseur', as_index=False)['val_rel'].sum()
 
-                            # Ajouter la ligne de somme totale avec style moderne
+                            # Ajouter la ligne de somme totale avec style bleu
                             total_val_rel = somme_par_fournisseur['val_rel'].sum()
                             nouvelle_ligne_fournisseur = pd.DataFrame({'fournisseur': ['Total'], 'val_rel': [total_val_rel]})
                             somme_par_fournisseur = pd.concat([somme_par_fournisseur, nouvelle_ligne_fournisseur], ignore_index=True)
 
-                            # Formater la ligne du total en violet
+                            # Formater la ligne du total en bleu
                             def highlight_total(s):
                                 if s.iloc[0] == 'Total':  # Index 0 car 'fournisseur' est la première colonne
-                                    return ['background-color: #bb86fc'] * len(s)  # Violet clair
+                                    return ['background-color: #ADD8E6'] * len(s)  # Bleu clair
                                 return [''] * len(s)
 
                             # Formatter la colonne 'val_rel' pour afficher deux chiffres avant la décimale et le symbole euro
@@ -172,7 +133,7 @@ if uploaded_file is not None:
                             nouvelle_ligne_designation = pd.DataFrame({'designation': ['Total'], 'qte_rel': [total_qte_rel]})
                             somme_par_designation = pd.concat([somme_par_designation, nouvelle_ligne_designation], ignore_index=True)
 
-                            # Appliquer le même style violet à la ligne du total
+                            # Appliquer le même style bleu à la ligne du total
                             st.write("Somme des quantités réalisées par désignation :")
                             st.dataframe(somme_par_designation.style.apply(highlight_total, axis=1))
 
