@@ -185,7 +185,10 @@ if uploaded_file is not None:
 
                 if not data_taille.empty:
                     # Afficher les résultats (designation, qte_rel, et datelivraison)
-                    resultats_taille = data_taille[['designation', 'qte_rel', 'datelivraison']]
+                    # Afficher les résultats (designation, qte_rel, datelivraison, et taille)
+                    resultats_taille = data_taille[['designation', 'qte_rel', 'datelivraison', 'taille']]
+                    st.write(f"Résultats pour la taille '{taille_recherchee}' :")
+                    st.dataframe(resultats_taille)
                     st.write(f"Résultats pour la taille '{taille_recherchee}' :")
                     st.dataframe(resultats_taille)
                 else:
