@@ -175,26 +175,27 @@ if uploaded_file is not None:
             st.subheader("Recherche par taille")
 
             # Zone de texte pour saisir une taille
-            st.markdown("<p style='color: var(--primary-color);'>Entrez une taille pour voir les quantités réalisées et les désignations correspondantes :</p>", unsafe_allow_html=True)
-            taille_recherchee = st.text_input("Taille")
+           # Zone de texte pour saisir une taille
+st.markdown("<p style='color: var(--primary-color);'>Entrez une taille pour voir les quantités réalisées et les désignations correspondantes :</p>", unsafe_allow_html=True)
+taille_recherchee = st.text_input("Taille")
 
-            if taille_recherchee:
-                # Filtrer les données pour la taille spécifiée et exclure qte_rel == 0
-                data_taille = data[(data['taille'].astype(str).str.contains(taille_recherchee, case=False, na=False)) &
-                                   (data['qte_rel'] != 0)]
+if taille_recherchee:
+    # Filtrer les données pour la taille spécifiée et exclure qte_rel == 0
+    data_taille = data[(data['taille'].astype(str).str.contains(taille_recherchee, case=False, na=False)) &
+                       (data['qte_rel'] != 0)]
 
-                if not data_taille.empty:
-                    # Afficher les résultats (designation, qte_rel, et datelivraison)
-                    # Afficher les résultats (designation, qte_rel, datelivraison, et taille)
-                    resultats_taille = data_taille[['designation', 'qte_rel', 'datelivraison', 'taille']]
-                    st.write(f"Résultats pour la taille '{taille_recherchee}' :")
-                    st.dataframe(resultats_taille)
-                    
-                else:
-                    st.warning("Aucune donnée trouvée pour cette taille.")
-        else:
-            st.error("La colonne 'datelivraison' n'existe pas dans le fichier CSV.")
-    except Exception as e:
-        st.error(f"Erreur lors de la lecture du fichier : {e}")
+    if not data_taille.empty:
+        # Afficher les résultats (designation, qte_rel, datelivraison, et taille)
+        resultats_taille = data_taille[['designation', 'qte_rel', 'datelivraison', 'taille']]
+        
+        # Trier les résultats par 'datelivraison' en ordre croissant
+        resultats_taille['datelivraison'] = pd.to_datetime(resultats_taille['datelivraison'], dayfirst=True)  # Convertir en datetime
+        resultats_taille = resultats_taille.sort_values(by='datelivraison')  # Trier par date
+        resultats_taille['datelivraison'] = resultats_taille['datelivraison'].dt.strftime("%d/%m/%Y")  # Formater la date pour l'affichage
+
+        st.write(f"Résultats pour la taille '{taille_recherchee}' :")
+        st.dataframe(resultats_taille)
+    else:
+        st.warning("Aucune donnée trouvée pour cette taille.")
 else:
     st.info("Veuillez télécharger un fichier CSV pour commencer.")
