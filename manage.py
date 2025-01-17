@@ -189,8 +189,7 @@ if uploaded_file is not None:
                     resultats_taille = data_taille[['designation', 'qte_rel', 'datelivraison', 'taille']]
                     st.write(f"Résultats pour la taille '{taille_recherchee}' :")
                     st.dataframe(resultats_taille)
-                    st.write(f"Résultats pour la taille '{taille_recherchee}' :")
-                    st.dataframe(resultats_taille)
+                    
                 else:
                     st.warning("Aucune donnée trouvée pour cette taille.")
         else:
