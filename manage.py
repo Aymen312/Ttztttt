@@ -196,6 +196,46 @@ if uploaded_file is not None:
                     st.dataframe(resultats_taille)
                 else:
                     st.warning("Aucune donnée trouvée pour cette taille.")
+                    
+            # Nouvelle fonctionnalité : Recherche par fournisseur
+            st.write("---")  # Une ligne de séparation
+            st.subheader("Recherche par fournisseur")
+            
+            # Créer une liste de fournisseurs uniques
+            if 'fournisseur' in data.columns:
+                fournisseurs = sorted(data['fournisseur'].dropna().unique())
+                fournisseur_selectionne = st.selectbox("Sélectionnez un fournisseur :", fournisseurs)
+                
+                if fournisseur_selectionne:
+                    # Filtrer les données pour le fournisseur sélectionné
+                    data_fournisseur = data[data['fournisseur'] == fournisseur_selectionne]
+                    
+                    if not data_fournisseur.empty:
+                        # Afficher les résultats (date, designation, qte_rel, val_rel)
+                        resultats_fournisseur = data_fournisseur[['datelivraison', 'designation', 'qte_rel', 'val_rel']]
+                        
+                        # Trier par date de livraison
+                        resultats_fournisseur['datelivraison'] = pd.to_datetime(resultats_fournisseur['datelivraison'], dayfirst=True)
+                        resultats_fournisseur = resultats_fournisseur.sort_values(by='datelivraison')
+                        resultats_fournisseur['datelivraison'] = resultats_fournisseur['datelivraison'].dt.strftime("%d/%m/%Y")
+                        
+                        # Formater val_rel en euros
+                        resultats_fournisseur['val_rel'] = resultats_fournisseur['val_rel'].apply(lambda x: f"€{x:.2f}")
+                        
+                        st.write(f"Commandes pour le fournisseur '{fournisseur_selectionne}' :")
+                        st.dataframe(resultats_fournisseur)
+                        
+                        # Ajouter un résumé des totaux
+                        total_qte = resultats_fournisseur['qte_rel'].sum()
+                        total_val = data_fournisseur['val_rel'].sum()  # On utilise data_fournisseur car resultats_fournisseur a val_rel en string
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.metric("Quantité totale", f"{total_qte}")
+                        with col2:
+                            st.metric("Valeur totale", f"€{total_val:.2f}")
+                    else:
+                        st.warning(f"Aucune donnée trouvée pour le fournisseur '{fournisseur_selectionne}'")
         else:
             st.error("La colonne 'datelivraison' n'existe pas dans le fichier CSV.")
     except Exception as e:
