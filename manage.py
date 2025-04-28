@@ -117,7 +117,7 @@ if uploaded_file is not None:
                             # Formatter la colonne 'val_rel' pour afficher deux chiffres avant la décimale et le symbole euro
                             styled_somme_fournisseur = somme_par_fournisseur.style.format({'val_rel': '€{:02.2f}'}).apply(highlight_total, axis=1)
 
-                            st.metric("Somme des val_rel par fournisseur :")
+                            st.write("Somme des val_rel par fournisseur :")
                             st.dataframe(styled_somme_fournisseur)
 
                     with col2:
